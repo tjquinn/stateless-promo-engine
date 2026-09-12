@@ -1,0 +1,21 @@
+{
+  "required_set": {
+    "items": [
+      {
+        "match_type": "category",
+        "value": "Bags",
+        "quantity": 2
+      }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "percentage",
+    "discount_value": 10
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false,
+  "code": "BAG16",
+  "name": "Bag 16"
+}

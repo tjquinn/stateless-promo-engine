@@ -1,0 +1,17 @@
+{
+  "code": "SEASONALSAVER",
+  "name": "Seasonal Saver",
+  "required_set": {
+    "items": [
+      { "match_type": "category", "value": "Seasonal", "quantity": 1 }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "percentage",
+    "discount_value": 14
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false
+}

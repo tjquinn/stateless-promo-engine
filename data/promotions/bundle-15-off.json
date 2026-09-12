@@ -1,0 +1,15 @@
+{
+  "code": "BUNDLE15",
+  "name": "Bundle 15",
+  "required_set": {
+    "items": [
+      { "match_type": "sku", "value": "SKU-100", "quantity": 1 },
+      { "match_type": "category", "value": "Bags", "quantity": 1 }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "percentage",
+    "discount_value": 15
+  }
+}

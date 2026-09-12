@@ -1,0 +1,17 @@
+{
+  "code": "BONUSBUNDLE",
+  "name": "Bonus Bundle",
+  "required_set": {
+    "items": [
+      { "match_type": "sku", "value": "SKU-200", "quantity": 2 }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "fixed_package_price",
+    "discount_value": 15
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false
+}

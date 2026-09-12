@@ -1,0 +1,17 @@
+{
+  "code": "MEMBERBONUS",
+  "name": "Member Bonus",
+  "required_set": {
+    "items": [
+      { "match_type": "category", "value": "Accessories", "quantity": 2 }
+    ]
+  },
+  "reward": {
+    "target": "cheapest_item_in_set",
+    "discount_type": "percentage",
+    "discount_value": 30
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false
+}

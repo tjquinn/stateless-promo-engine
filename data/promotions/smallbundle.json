@@ -1,0 +1,23 @@
+{
+  "required_set": {
+    "items": [
+      {
+        "match_type": "sku",
+        "value": "SKU-300",
+        "quantity": 1
+      },
+      {
+        "match_type": "category",
+        "value": "Accessories",
+        "quantity": 1
+      }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "fixed_package_price",
+    "discount_value": 42.5
+  },
+  "code": "SMALLBUNDLE",
+  "name": "Small Bundle"
+}

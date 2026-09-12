@@ -1,0 +1,8 @@
+[
+  { "sku": "SKU-100", "name": "Wireless Mouse", "category": "Accessories", "price": 29.99 },
+  { "sku": "SKU-101", "name": "Mechanical Keyboard", "category": "Accessories", "price": 89.99 },
+  { "sku": "SKU-200", "name": "Canvas Backpack", "category": "Bags", "price": 49.99 },
+  { "sku": "SKU-201", "name": "Travel Tote", "category": "Bags", "price": 39.99 },
+  { "sku": "SKU-300", "name": "USB-C Charger", "category": "Power", "price": 24.99 },
+  { "sku": "SKU-301", "name": "Noise Cancelling Headset", "category": "Audio", "price": 149.99 }
+]

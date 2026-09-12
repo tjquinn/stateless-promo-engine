@@ -1,0 +1,17 @@
+{
+  "code": "CATEGORYBOOST",
+  "name": "Category Boost",
+  "required_set": {
+    "items": [
+      { "match_type": "category", "value": "Shoes", "quantity": 1 }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "percentage",
+    "discount_value": 18
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false
+}

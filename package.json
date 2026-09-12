@@ -1,0 +1,13 @@
+{
+  "name": "stateless-commerce",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Stateless local-engine commerce promotion and checkout microservice",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

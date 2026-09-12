@@ -1,0 +1,21 @@
+{
+  "required_set": {
+    "items": [
+      {
+        "match_type": "sku",
+        "value": "SKU-300",
+        "quantity": 1
+      }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "fixed_package_price",
+    "discount_value": 20
+  },
+  "start_at": "2026-09-11T00:00:00.000Z",
+  "end_at": "2026-09-30T00:00:00.000Z",
+  "retired": true,
+  "code": "TIMEBUNDLE",
+  "name": "Time Bundle"
+}

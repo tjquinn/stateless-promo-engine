@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <title>Stateless Commerce</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #111827;
+        --panel-alt: #1f2937;
+        --ink: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #8b5cf6;
+        --accent-2: #22c55e;
+        --danger: #ef4444;
+        --border: rgba(148, 163, 184, 0.2);
+        --shadow: 0 20px 45px rgba(15, 23, 42, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      *::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+
+      html {
+        overflow-y: scroll;
+        scrollbar-gutter: stable;
+      }
+
+      body {
+        margin: 0;
+        background: linear-gradient(145deg, #020817 0%, #111827 100%);
+        color: var(--ink);
+        font-family: Inter, "Segoe UI", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .page {
+        width: min(1200px, calc(100% - 32px));
+        margin: 40px auto;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .title {
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        margin: 0;
+      }
+
+      .badge {
+        background: rgba(139, 92, 246, 0.14);
+        border: 1px solid rgba(139, 92, 246, 0.4);
+        color: #ddd6fe;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 24px;
+      }
+
+      .panel {
+        background: rgba(17, 24, 39, 0.96);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 24px;
+      }
+
+      .panel h2 {
+        margin-top: 0;
+        font-size: 1.2rem;
+      }
+
+      .catalog {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .product-card {
+        background: linear-gradient(180deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9));
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sku {
+        font-size: 0.76rem;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .price {
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .product-card button,
+      .primary-btn,
+      .secondary-btn {
+        border: none;
+        cursor: pointer;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-weight: 600;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+      }
+
+      .product-card button,
+      .primary-btn {
+        background: linear-gradient(135deg, var(--accent), #6366f1);
+        color: white;
+      }
+
+      .secondary-btn {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #bbf7d0;
+      }
+
+      .product-card button:hover,
+      .primary-btn:hover,
+      .secondary-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+
+      .cart-item strong {
+        display: block;
+      }
+
+      .cart-item span {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .totals {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        display: grid;
+        gap: 8px;
+      }
+
+      .totals-row {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .grand-total {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #f5d0fe;
+      }
+
+      .editor {
+        margin-top: 32px;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      input, textarea, select {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--ink);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font: inherit;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+      }
+
+      select {
+        background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+        background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
+        background-size: 6px 6px, 6px 6px;
+        background-repeat: no-repeat;
+        padding-right: 36px;
+      }
+
+      input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: rgba(139, 92, 246, 0.7);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+      }
+
+      textarea {
+        min-height: 200px;
+        resize: vertical;
+      }
+
+      .metrics {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .metric {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        min-width: 140px;
+      }
+
+      .metric-label {
+        display: block;
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .metric-value {
+        display: block;
+        font-size: 1.1rem;
+        margin-top: 6px;
+        font-weight: 700;
+      }
+
+      .status {
+        margin-top: 12px;
+        color: #cbd5e1;
+        min-height: 22px;
+      }
+
+      .status.error {
+        color: #fca5a5;
+      }
+
+      .status.success {
+        color: #bbf7d0;
+      }
+
+      .rule-box {
+        display: grid;
+        gap: 12px;
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 12px;
+        padding: 14px;
+      }
+
+      .rule-box-header {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #cbd5e1;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .collapsible-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .collapse-toggle {
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--ink);
+        border-radius: 999px;
+        width: 28px;
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        line-height: 1;
+      }
+
+      .admin-panel-collapsed .admin-panel-body {
+        display: none;
+      }
+
+      .promotion-panel-collapsed .admin-panel-body {
+        display: none;
+      }
+
+      .promotion-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .promotion-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .promotion-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .promotion-code {
+        font-weight: 700;
+        color: #e9d5ff;
+      }
+
+      .promotion-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .promotion-summary {
+        color: #cbd5e1;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .promotion-history-shell,
+      .promotion-editor-shell {
+        display: none;
+      }
+
+      .promotion-history-shell.visible,
+      .promotion-editor-shell.visible {
+        display: block;
+        border-top: 1px solid var(--border);
+        padding-top: 10px;
+        margin-top: 8px;
+      }
+
+      .promotion-history-toggle {
+        width: fit-content;
+      }
+
+      .promotion-history-content {
+        margin-top: 12px;
+        display: none;
+      }
+
+      .promotion-history-content.visible {
+        display: block;
+      }
+
+      .promotion-editor-content {
+        display: none;
+      }
+
+      .promotion-editor-content.visible {
+        display: block;
+      }
+
+      .promotion-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+
+      .promotion-bank-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .small-btn {
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--ink);
+        border-radius: 8px;
+        padding: 7px 10px;
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+
+      .small-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        background: rgba(51, 65, 85, 0.4);
+        color: rgba(148, 163, 184, 0.9);
+        border-color: rgba(148, 163, 184, 0.2);
+      }
+
+      .small-btn.warning {
+        border-color: rgba(239, 68, 68, 0.5);
+        color: #fca5a5;
+      }
+
+      .history-panel {
+        margin-top: 16px;
+        display: none;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+
+      .history-panel.visible {
+        display: block;
+      }
+
+      .history-entry {
+        border-top: 1px solid var(--border);
+        padding-top: 12px;
+        margin-top: 12px;
+      }
+
+      .history-entry:first-child {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+      }
+
+      .history-diff {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 0.76rem;
+        background: rgba(2, 6, 23, 0.7);
+        border-radius: 8px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        color: #dbeafe;
+        margin-top: 8px;
+      }
+
+      .history-compare-grid {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .history-compare-row {
+        display: grid;
+        grid-template-columns: 180px 1fr 1fr;
+        gap: 10px;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.65);
+      }
+
+      .history-compare-label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        display: flex;
+        align-items: center;
+      }
+
+      .history-compare-side {
+        border-radius: 8px;
+        padding: 10px;
+        background: rgba(2, 6, 23, 0.4);
+        border: 1px solid transparent;
+      }
+
+      .history-compare-side span {
+        display: block;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .history-compare-side strong {
+        word-break: break-word;
+        line-height: 1.4;
+      }
+
+      .history-compare-side.changed {
+        border-color: rgba(34, 197, 94, 0.45);
+        background: rgba(34, 197, 94, 0.08);
+      }
+
+      .history-compare-side.removed {
+        border-color: rgba(239, 68, 68, 0.45);
+        background: rgba(239, 68, 68, 0.08);
+      }
+
+      .history-compare-action {
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        margin-top: 8px;
+      }
+
+      .history-compare-side:hover .history-compare-action,
+      .history-compare-side:focus-within .history-compare-action {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .rule-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .rule-grid-compact {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .grid { grid-template-columns: 1fr; }
+        .rule-grid, .rule-grid-compact { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <h1 class="title">Stateless Commerce</h1>
+        <div class="badge" id="gitHashBadge">syncing…</div>
+      </header>
+
+      <div class="grid">
+        <section class="panel">
+          <h2>Storefront Simulator</h2>
+          <div id="catalog" class="catalog"></div>
+
+          <div class="editor" style="margin-top: 24px;">
+            <h2>Checkout</h2>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 16px;">
+              <input id="promoCode" type="text" placeholder="Coupon code" style="max-width: 220px;" />
+              <button class="primary-btn" id="checkoutBtn">Evaluate Cart</button>
+            </div>
+            <div class="metrics">
+              <div class="metric">
+                <span class="metric-label">Execution</span>
+                <span class="metric-value" id="executionMetric">0.000 ms</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Savings</span>
+                <span class="metric-value" id="savingsMetric">$0.00</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Applied</span>
+                <span class="metric-value" id="promoMetric">—</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel">
+          <h2>Cart</h2>
+          <div id="cartItems"></div>
+          <div class="totals">
+            <div class="totals-row"><span>Subtotal</span><strong id="subTotalValue">$0.00</strong></div>
+            <div class="totals-row"><span>Discount</span><strong id="discountValue">$0.00</strong></div>
+            <div class="totals-row grand-total"><span>Total</span><span id="grandTotalValue">$0.00</span></div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="panel editor" id="promotionListPanel">
+        <div class="promotion-bank-header">
+          <div class="collapsible-header" id="promotionListToggle" style="flex: 1; min-width: 180px;">
+            <h2 style="margin: 0;">Promotion Bank</h2>
+            <button class="collapse-toggle" type="button" aria-label="Toggle promotions panel">+</button>
+          </div>
+        </div>
+        <div style="padding: 12px 16px 0;">
+          <input
+            id="promotionSearch"
+            type="search"
+            placeholder="Search promotions by name"
+            aria-label="Search promotions by name"
+            style="width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid rgba(148,163,184,0.35); border-radius: 8px; background: rgba(15, 23, 42, 0.8); color: #e2e8f0; font: inherit;"
+          />
+        </div>
+
+        <div class="admin-panel-body">
+          <div id="adminStatus" class="status"></div>
+          <div id="promotionList" class="promotion-list"></div>
+          <div id="historyPanel" class="history-panel"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const state = {
+        cart: [],
+        products: [],
+        promotions: [],
+        promoSearch: '',
+        promoPage: 1,
+        promoPageSize: 10,
+      };
+
+      const catalogEl = document.getElementById('catalog');
+      const cartItemsEl = document.getElementById('cartItems');
+      const promoCodeEl = document.getElementById('promoCode');
+      const executionMetricEl = document.getElementById('executionMetric');
+      const savingsMetricEl = document.getElementById('savingsMetric');
+      const promoMetricEl = document.getElementById('promoMetric');
+      const gitHashBadge = document.getElementById('gitHashBadge');
+      const adminStatusEl = document.getElementById('adminStatus');
+
+      function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(Number(value) || 0);
+      }
+
+      function renderCatalog() {
+        catalogEl.innerHTML = '';
+
+        for (const product of state.products) {
+          const card = document.createElement('article');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <div class="product-meta">
+              <span class="sku">${product.sku}</span>
+              <span class="price">${formatCurrency(product.price)}</span>
+            </div>
+            <div>
+              <strong>${product.name}</strong>
+              <div style="color: #94a3b8; margin-top: 6px;">${product.category}</div>
+            </div>
+            <button type="button" data-sku="${product.sku}">Add to cart</button>
+          `;
+          catalogEl.appendChild(card);
+        }
+
+        catalogEl.querySelectorAll('button[data-sku]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const sku = button.dataset.sku;
+            const product = state.products.find((item) => item.sku === sku);
+            if (!product) return;
+
+            const existing = state.cart.find((item) => item.sku === sku);
+            if (existing) {
+              existing.quantity += 1;
+            } else {
+              state.cart.push({ sku: product.sku, name: product.name, category: product.category, unitPrice: product.price, quantity: 1 });
+            }
+
+            renderCart();
+          });
+        });
+      }
+
+      function renderCart() {
+        cartItemsEl.innerHTML = '';
+
+        if (!state.cart.length) {
+          cartItemsEl.innerHTML = '<p style="color: #94a3b8; margin: 0;">Your cart is empty.</p>';
+          document.getElementById('subTotalValue').textContent = formatCurrency(0);
+          document.getElementById('discountValue').textContent = formatCurrency(0);
+          document.getElementById('grandTotalValue').textContent = formatCurrency(0);
+          return;
+        }
+
+        let subtotal = 0;
+
+        for (const item of state.cart) {
+          const total = item.unitPrice * item.quantity;
+          subtotal += total;
+
+          const row = document.createElement('div');
+          row.className = 'cart-item';
+          row.innerHTML = `
+            <div>
+              <strong>${item.name}</strong>
+              <span>${item.quantity} × ${formatCurrency(item.unitPrice)}</span>
+            </div>
+            <strong>${formatCurrency(total)}</strong>
+          `;
+          cartItemsEl.appendChild(row);
+        }
+
+        document.getElementById('subTotalValue').textContent = formatCurrency(subtotal);
+      }
+
+      async function syncGit() {
+        try {
+          const response = await fetch('/api/admin/git-sync', { method: 'POST' });
+          const payload = await response.json();
+
+          if (!response.ok) {
+            adminStatusEl.textContent = payload.message || 'Git sync failed.';
+            adminStatusEl.className = 'status error';
+            return;
+          }
+
+          gitHashBadge.textContent = `commit ${payload.gitHash || 'unknown'}`;
+          adminStatusEl.textContent = `Repository synced at ${payload.gitHash || 'HEAD'}`;
+          adminStatusEl.className = 'status success';
+          await loadProducts();
+          await loadPromotions();
+        } catch (error) {
+          adminStatusEl.textContent = 'Unable to reach the backend.';
+          adminStatusEl.className = 'status error';
+        }
+      }
+
+      async function loadProducts() {
+        const response = await fetch('/api/products');
+        const payload = await response.json();
+        state.products = payload.products || [];
+        renderCatalog();
+      }
+
+      function formatDateTimeInput(value) {
+        if (!value) {
+          return '';
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return '';
+        }
+
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      }
+
+      function formatRelativeTime(value) {
+        if (!value) {
+          return 'Never';
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return 'Unknown';
+        }
+
+        const deltaMs = Date.now() - date.getTime();
+        const seconds = Math.max(0, Math.floor(deltaMs / 1000));
+
+        if (seconds < 60) {
+          return `${seconds}s ago`;
+        }
+
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) {
+          return `${minutes} min ago`;
+        }
+
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) {
+          return `${hours} hr ago`;
+        }
+
+        const days = Math.floor(hours / 24);
+        if (days < 30) {
+          return `${days} day${days === 1 ? '' : 's'} ago`;
+        }
+
+        const months = Math.floor(days / 30);
+        if (months < 12) {
+          return `${months} mo ago`;
+        }
+
+        const years = Math.floor(months / 12);
+        return `${years} yr ago`;
+      }
+
+      function formatFriendlyDateTimeEST(value) {
+        if (!value) {
+          return 'No date available';
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return 'Unknown date';
+        }
+
+        return new Intl.DateTimeFormat('en-US', {
+          timeZone: 'America/New_York',
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        }).format(date);
+      }
+
+      async function hydrateLastEditedForCard(card, promo) {
+        const stampEl = card.querySelector('[data-last-edited]');
+        if (!stampEl) {
+          return;
+        }
+
+        const timestamp = promo && promo.last_edited ? new Date(Number(promo.last_edited)).toISOString() : null;
+        if (timestamp) {
+          stampEl.textContent = formatRelativeTime(timestamp);
+          stampEl.title = formatFriendlyDateTimeEST(timestamp);
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/admin/promotion-history?code=${encodeURIComponent(promo.code)}`);
+          const result = await response.json();
+          if (!response.ok || !result.ok) {
+            return;
+          }
+
+          const history = result.history || [];
+          const newest = history[0];
+          const newestTimestamp = newest && newest.timestamp ? newest.timestamp : null;
+          const friendlyTime = formatRelativeTime(newestTimestamp);
+          stampEl.textContent = friendlyTime;
+          stampEl.title = formatFriendlyDateTimeEST(newestTimestamp);
+        } catch (error) {
+          stampEl.textContent = 'Unknown';
+          stampEl.title = 'No edit history available';
+        }
+      }
+
+      function fuzzyMatchPromoName(query, promo) {
+        const value = String(promo && (promo.name || promo.code || '')).trim();
+        const searchText = value.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const target = String(query || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        if (!target) {
+          return true;
+        }
+
+        if (!searchText) {
+          return false;
+        }
+
+        if (searchText.includes(target)) {
+          return true;
+        }
+
+        let cursor = 0;
+        for (const character of target) {
+          const nextIndex = searchText.indexOf(character, cursor);
+          if (nextIndex === -1) {
+            return false;
+          }
+          cursor = nextIndex + 1;
+        }
+
+        return true;
+      }
+
+      function getVisiblePromotions() {
+        const sortedPromos = [...state.promotions].sort((left, right) => {
+          const leftStamp = Number(left.last_edited) || 0;
+          const rightStamp = Number(right.last_edited) || 0;
+          return rightStamp - leftStamp;
+        });
+
+        const query = state.promoSearch.trim();
+        if (!query) {
+          return sortedPromos.slice(0, 5);
+        }
+
+        const filteredPromos = sortedPromos.filter((promo) => fuzzyMatchPromoName(query, promo));
+        return filteredPromos;
+      }
+
+      function renderPromotions() {
+        const listEl = document.getElementById('promotionList');
+        listEl.innerHTML = '';
+
+        if (!state.promotions.length) {
+          listEl.innerHTML = '<div class="promotion-card"><div class="promotion-summary">No promotions are currently saved.</div></div>';
+          return;
+        }
+
+        const visiblePromos = getVisiblePromotions();
+        const query = state.promoSearch.trim();
+        const totalPages = query ? Math.max(1, Math.ceil(visiblePromos.length / state.promoPageSize)) : 1;
+        if (query && state.promoPage > totalPages) {
+          state.promoPage = totalPages;
+        }
+
+        const startIndex = query ? (state.promoPage - 1) * state.promoPageSize : 0;
+        const pagePromos = query ? visiblePromos.slice(startIndex, startIndex + state.promoPageSize) : visiblePromos;
+
+        if (!pagePromos.length) {
+          listEl.innerHTML = '<div class="promotion-card"><div class="promotion-summary">No promotions match that search.</div></div>';
+          return;
+        }
+
+        for (const promo of pagePromos) {
+          const requirement = (promo.required_set && promo.required_set.items) || [];
+          const requirementSummary = requirement
+            .map((item) => `${item.match_type}:${item.value} x${item.quantity}`)
+            .join(' + ');
+
+          const reward = promo.reward || {};
+          const rewardSummary = reward.discount_type === 'percentage'
+            ? `${reward.discount_value}% off ${reward.target}`
+            : `$${Number(reward.discount_value).toFixed(2)} package ${reward.target}`;
+
+          const activeStatus = promo.retired
+            ? 'Retired'
+            : ((promo.start_at && new Date(promo.start_at) > new Date()) || (promo.end_at && new Date(promo.end_at) < new Date())
+              ? 'Scheduled'
+              : 'Active');
+
+          const card = document.createElement('div');
+          card.className = 'promotion-card';
+          card.innerHTML = `
+            <div class="promotion-card-header">
+              <div>
+                <div class="promotion-name" style="font-size: 0.8rem; color: #cbd5e1;">${escapeHtml(promo.name || promo.code)}</div>
+                <div class="promotion-code">${promo.code}</div>
+              </div>
+              <span class="promotion-meta">${activeStatus}</span>
+            </div>
+            <div class="promotion-meta">
+              <span>Set: ${requirementSummary || 'n/a'}</span>
+              <span>Reward: ${rewardSummary}</span>
+            </div>
+            <div class="promotion-meta">
+              <span>${promo.start_at ? `Starts ${new Date(promo.start_at).toLocaleString()}` : 'No start date'}</span>
+              <span>${promo.end_at ? `Ends ${new Date(promo.end_at).toLocaleString()}` : 'No end date'}</span>
+            </div>
+            <div class="promotion-meta" style="justify-content: space-between; align-items: center;">
+              <span>Last edited</span>
+              <span data-last-edited="${promo.code}" title="Loading...">Loading...</span>
+            </div>
+            <div class="promotion-actions">
+              <button type="button" class="small-btn" data-edit-code="${promo.code}">Edit</button>
+              <button type="button" class="small-btn promotion-history-toggle" data-history-code="${promo.code}">History</button>
+              <button type="button" class="small-btn warning" data-retire-code="${promo.code}">${promo.retired ? 'Activate' : 'Retire'}</button>
+            </div>
+            <div class="promotion-editor-shell">
+              <div class="promotion-editor-content" data-editor-content="${promo.code}"></div>
+            </div>
+            <div class="promotion-history-shell">
+              <div class="promotion-history-content" data-history-content="${promo.code}"></div>
+            </div>
+          `;
+          hydrateLastEditedForCard(card, promo);
+          listEl.appendChild(card);
+        }
+
+        if (query && visiblePromos.length > state.promoPageSize) {
+          const pagination = document.createElement('div');
+          pagination.className = 'promotion-actions';
+          pagination.style.marginTop = '12px';
+          pagination.style.justifyContent = 'space-between';
+          pagination.innerHTML = `
+            <button type="button" class="small-btn" ${state.promoPage <= 1 ? 'disabled' : ''} data-promo-page="prev">Prev</button>
+            <span style="color: #94a3b8;">Page ${state.promoPage} of ${totalPages}</span>
+            <button type="button" class="small-btn" ${state.promoPage >= totalPages ? 'disabled' : ''} data-promo-page="next">Next</button>
+          `;
+          pagination.querySelector('[data-promo-page="prev"]').addEventListener('click', () => {
+            if (state.promoPage > 1) {
+              state.promoPage -= 1;
+              renderPromotions();
+            }
+          });
+          pagination.querySelector('[data-promo-page="next"]').addEventListener('click', () => {
+            if (state.promoPage < totalPages) {
+              state.promoPage += 1;
+              renderPromotions();
+            }
+          });
+          listEl.appendChild(pagination);
+        }
+
+        listEl.querySelectorAll('[data-edit-code]').forEach((button) => {
+          button.addEventListener('click', async () => {
+            const promo = state.promotions.find((entry) => entry.code === button.dataset.editCode);
+            if (!promo) {
+              return;
+            }
+
+            const card = button.closest('.promotion-card');
+            const editorShell = card?.querySelector('[data-editor-content]');
+            const historyShell = card?.querySelector('[data-history-content]');
+            const editorContainer = card?.querySelector('.promotion-editor-shell');
+            const historyContainer = card?.querySelector('.promotion-history-shell');
+            if (!editorShell || !editorContainer) {
+              return;
+            }
+
+            const isVisible = editorShell.classList.contains('visible') || editorContainer.classList.contains('visible');
+            if (isVisible) {
+              editorShell.classList.remove('visible');
+              editorContainer.classList.remove('visible');
+              editorShell.innerHTML = '';
+              return;
+            }
+
+            if (historyContainer) {
+              historyContainer.classList.remove('visible');
+              if (historyShell) {
+                historyShell.classList.remove('visible');
+              }
+            }
+
+            const matchItem = (promo.required_set && promo.required_set.items && promo.required_set.items[0]) || {};
+            const reward = promo.reward || {};
+            editorShell.innerHTML = `
+              <div class="rule-box">
+                <div class="rule-box-header">Edit Promotion: ${escapeHtml(promo.code)}</div>
+                <form data-inline-edit-form="${escapeHtml(promo.code)}">
+                  <label>
+                    Promotion code
+                    <input name="code" type="text" value="${escapeHtml(promo.code || '')}" required />
+                  </label>
+                  <div class="rule-grid">
+                    <label>
+                      Match type
+                      <select name="matchType">
+                        <option value="sku" ${(matchItem.match_type || 'sku') === 'sku' ? 'selected' : ''}>SKU</option>
+                        <option value="category" ${(matchItem.match_type || 'sku') === 'category' ? 'selected' : ''}>Category</option>
+                      </select>
+                    </label>
+                    <label>
+                      Match value
+                      <input name="matchValue" type="text" value="${escapeHtml(matchItem.value || '')}" />
+                    </label>
+                    <label>
+                      Quantity
+                      <input name="matchQuantity" type="number" min="1" value="${Number(matchItem.quantity || 1)}" />
+                    </label>
+                  </div>
+                  <div class="rule-grid-compact">
+                    <label>
+                      Reward target
+                      <select name="rewardTarget">
+                        <option value="cheapest_item_in_set" ${(reward.target || 'entire_set') === 'cheapest_item_in_set' ? 'selected' : ''}>Cheapest item in set</option>
+                        <option value="entire_set" ${(reward.target || 'entire_set') === 'entire_set' ? 'selected' : ''}>Entire set</option>
+                      </select>
+                    </label>
+                    <label>
+                      Discount type
+                      <select name="discountType">
+                        <option value="percentage" ${(reward.discount_type || 'percentage') === 'percentage' ? 'selected' : ''}>Percentage</option>
+                        <option value="fixed_package_price" ${(reward.discount_type || 'percentage') === 'fixed_package_price' ? 'selected' : ''}>Fixed package price</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="rule-grid-compact">
+                    <label>
+                      Starts at
+                      <input name="startAt" type="datetime-local" value="${formatDateTimeInput(promo.start_at)}" />
+                    </label>
+                    <label>
+                      Ends at
+                      <input name="endAt" type="datetime-local" value="${formatDateTimeInput(promo.end_at)}" />
+                    </label>
+                  </div>
+                  <label>
+                    <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                      <span>Retired</span>
+                      <input name="retired" type="checkbox" value="true" ${promo.retired ? 'checked' : ''} style="width: 18px; height: 18px;" />
+                    </span>
+                  </label>
+                  <label>
+                    Discount value
+                    <input name="discountValue" type="number" step="0.01" value="${Number(reward.discount_value || 0)}" />
+                  </label>
+                  <div class="promotion-actions">
+                    <button class="primary-btn" type="submit">Save</button>
+                    <button class="secondary-btn" type="button" data-inline-cancel="${escapeHtml(promo.code)}">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            `;
+
+            const form = editorShell.querySelector('form[data-inline-edit-form]');
+            const cancelBtn = editorShell.querySelector('[data-inline-cancel]');
+
+            form?.addEventListener('input', () => {
+              const formData = new FormData(form);
+              const definition = {
+                required_set: {
+                  items: [{
+                    match_type: formData.get('matchType') || 'sku',
+                    value: String(formData.get('matchValue') || '').trim(),
+                    quantity: Number(formData.get('matchQuantity') || 1),
+                  }],
+                },
+                reward: {
+                  target: formData.get('rewardTarget') || 'entire_set',
+                  discount_type: formData.get('discountType') || 'percentage',
+                  discount_value: Number(formData.get('discountValue') || 0),
+                },
+                start_at: formData.get('startAt') ? new Date(formData.get('startAt')).toISOString() : null,
+                end_at: formData.get('endAt') ? new Date(formData.get('endAt')).toISOString() : null,
+                retired: Boolean(formData.get('retired')),
+                code: formData.get('code') || promo.code,
+              };
+              form.querySelector('textarea[name="definition"]').value = JSON.stringify(definition, null, 2);
+            });
+
+            cancelBtn?.addEventListener('click', () => {
+              editorShell.classList.remove('visible');
+              editorContainer.classList.remove('visible');
+              editorShell.innerHTML = '';
+            });
+
+            form?.addEventListener('submit', async (event) => {
+              event.preventDefault();
+              const formData = new FormData(form);
+              const code = formData.get('code');
+              const definition = {
+                required_set: {
+                  items: [{
+                    match_type: formData.get('matchType') || 'sku',
+                    value: String(formData.get('matchValue') || '').trim(),
+                    quantity: Number(formData.get('matchQuantity') || 1),
+                  }],
+                },
+                reward: {
+                  target: formData.get('rewardTarget') || 'entire_set',
+                  discount_type: formData.get('discountType') || 'percentage',
+                  discount_value: Number(formData.get('discountValue') || 0),
+                },
+                start_at: formData.get('startAt') ? new Date(formData.get('startAt')).toISOString() : null,
+                end_at: formData.get('endAt') ? new Date(formData.get('endAt')).toISOString() : null,
+                retired: Boolean(formData.get('retired')),
+              };
+              definition.code = code;
+
+              try {
+                const response = await fetch('/api/admin/save-promotion', {
+                  method: 'POST',
+                  body: (() => {
+                    const payload = new FormData();
+                    payload.set('code', code);
+                    payload.set('definition', JSON.stringify(definition, null, 2));
+                    return payload;
+                  })(),
+                });
+
+                const result = await response.json();
+                if (!response.ok) {
+                  throw new Error(result.message || 'Unable to save promotion.');
+                }
+
+                adminStatusEl.textContent = `Promotion ${code} saved and committed: ${result.gitHash || 'unknown'}`;
+                adminStatusEl.className = 'status success';
+                gitHashBadge.textContent = `commit ${result.gitHash || 'unknown'}`;
+                await loadPromotions();
+              } catch (error) {
+                adminStatusEl.textContent = error.message;
+                adminStatusEl.className = 'status error';
+              }
+            });
+
+            editorShell.classList.add('visible');
+            editorContainer.classList.add('visible');
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          });
+        });
+
+        listEl.querySelectorAll('[data-history-code]').forEach((button) => {
+          button.addEventListener('click', async () => {
+            const code = button.dataset.historyCode;
+            const card = button.closest('.promotion-card');
+            const historyShell = card?.querySelector('[data-history-content]');
+            const historyContainer = card?.querySelector('.promotion-history-shell');
+            const editorContainer = card?.querySelector('.promotion-editor-shell');
+            const editorShell = card?.querySelector('[data-editor-content]');
+            const isVisible = historyContainer && historyContainer.classList.contains('visible');
+
+            if (historyContainer) {
+              if (isVisible) {
+                historyContainer.classList.remove('visible');
+                if (historyShell) {
+                  historyShell.classList.remove('visible');
+                }
+                return;
+              }
+
+              if (editorContainer) {
+                editorContainer.classList.remove('visible');
+                if (editorShell) {
+                  editorShell.classList.remove('visible');
+                  editorShell.innerHTML = '';
+                }
+              }
+
+              historyContainer.classList.add('visible');
+              historyShell?.classList.add('visible');
+            }
+
+            try {
+              const response = await fetch(`/api/admin/promotion-history?code=${encodeURIComponent(code)}`);
+              const result = await response.json();
+
+              if (!response.ok) {
+                throw new Error(result.message || 'Unable to load history.');
+              }
+
+              const history = result.history || [];
+              const historyState = {
+                code,
+                entries: history,
+                index: 0,
+              };
+
+              function renderHistoryView() {
+                const entry = historyState.entries[historyState.index];
+                const snapshot = (entry && entry.snapshot) || {};
+                const previousEntry = historyState.entries[historyState.index + 1] || null;
+                const previousSnapshot = (previousEntry && previousEntry.snapshot) || {};
+                const matchItem = (snapshot.required_set && snapshot.required_set.items && snapshot.required_set.items[0]) || {};
+                const previousMatchItem = (previousSnapshot.required_set && previousSnapshot.required_set.items && previousSnapshot.required_set.items[0]) || {};
+                const reward = snapshot.reward || {};
+                const previousReward = previousSnapshot.reward || {};
+                const commitHash = entry ? entry.commitHash : 'n/a';
+                const timestamp = entry && entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'Unknown time';
+
+                const makeValue = (value) => {
+                  if (value === null || value === undefined) return '—';
+                  if (typeof value === 'boolean') return value ? 'true' : 'false';
+                  if (typeof value === 'object') return JSON.stringify(value);
+                  return String(value);
+                };
+
+                const compareFields = [
+                  { label: 'Code', path: 'code', before: previousSnapshot.code || snapshot.code || historyState.code, after: snapshot.code || historyState.code },
+                  { label: 'Match type', path: 'required_set.items[0].match_type', before: previousMatchItem.match_type || 'sku', after: matchItem.match_type || 'sku' },
+                  { label: 'Match value', path: 'required_set.items[0].value', before: previousMatchItem.value || '—', after: matchItem.value || '—' },
+                  { label: 'Match quantity', path: 'required_set.items[0].quantity', before: previousMatchItem.quantity ?? 1, after: matchItem.quantity ?? 1 },
+                  { label: 'Reward target', path: 'reward.target', before: previousReward.target || 'entire_set', after: reward.target || 'entire_set' },
+                  { label: 'Discount type', path: 'reward.discount_type', before: previousReward.discount_type || 'percentage', after: reward.discount_type || 'percentage' },
+                  { label: 'Discount value', path: 'reward.discount_value', before: previousReward.discount_value ?? 0, after: reward.discount_value ?? 0 },
+                  { label: 'Retired', path: 'retired', before: previousSnapshot.retired ?? false, after: snapshot.retired ?? false },
+                ];
+
+                const compareMarkup = compareFields.map((field) => {
+                  const beforeValue = makeValue(field.before);
+                  const afterValue = makeValue(field.after);
+                  const changed = beforeValue !== afterValue;
+                  return `
+                    <div class="history-compare-row">
+                      <div class="history-compare-label">${escapeHtml(field.label)}</div>
+                      <div class="history-compare-side ${changed ? 'changed' : ''}">
+                        <span>Current</span>
+                        <strong>${escapeHtml(afterValue)}</strong>
+                        <button type="button" class="small-btn history-compare-action" disabled title="Already the current value">Current value</button>
+                      </div>
+                      <div class="history-compare-side ${changed ? 'removed' : ''}">
+                        <span>Previous</span>
+                        <strong>${escapeHtml(beforeValue)}</strong>
+                        <button type="button" class="small-btn history-compare-action" data-field-restore="${escapeHtml(field.path)}" data-field-value="${escapeHtml(JSON.stringify(field.before))}">Restore previous value</button>
+                      </div>
+                    </div>
+                  `;
+                }).join('');
+
+                if (!historyState.entries.length) {
+                  historyShell.innerHTML = '<div class="promotion-summary">No history found.</div>';
+                  return;
+                }
+
+                historyShell.innerHTML = `
+                  <div class="history-entry" style="border-top: none; padding-top: 0; margin-top: 0;">
+                    <div class="promotion-card-header">
+                      <div>
+                        <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;">History</div>
+                        <h3 style="margin: 4px 0 0; font-size: 1rem;">${escapeHtml(historyState.code)}</h3>
+                      </div>
+                      <div class="promotion-actions">
+                        <button type="button" class="small-btn" data-history-nav="prev" ${historyState.index >= historyState.entries.length - 1 ? 'disabled' : ''}>Prev</button>
+                        <button type="button" class="small-btn" data-history-nav="next" ${historyState.index <= 0 ? 'disabled' : ''}>Next</button>
+                        <button type="button" class="small-btn" data-history-restore="${escapeHtml(commitHash)}">Restore this snapshot</button>
+                      </div>
+                    </div>
+                    <div class="promotion-meta" style="margin-top: 10px;">
+                      <span><strong>${escapeHtml(commitHash)}</strong></span>
+                      <span>${escapeHtml(timestamp)}</span>
+                      <span>${escapeHtml(entry.subject || 'Promotion updated')}</span>
+                    </div>
+                    <div class="history-compare-grid">${compareMarkup}</div>
+                  </div>
+                `;
+
+                const prevButton = historyShell.querySelector('[data-history-nav="prev"]');
+                const nextButton = historyShell.querySelector('[data-history-nav="next"]');
+                const restoreButton = historyShell.querySelector('[data-history-restore]');
+                const fieldRestoreButtons = historyShell.querySelectorAll('[data-field-restore]');
+
+                const restoreFieldValue = async (fieldPath, fieldValue) => {
+                  try {
+                    const response = await fetch('/api/admin/restore-field', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ code: historyState.code, fieldPath, value: fieldValue }),
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) {
+                      throw new Error(result.message || 'Unable to restore that field.');
+                    }
+
+                    adminStatusEl.textContent = `Restored ${fieldPath} for ${historyState.code}.`;
+                    adminStatusEl.className = 'status success';
+                    gitHashBadge.textContent = `commit ${result.gitHash || 'unknown'}`;
+                    await loadPromotions();
+                  } catch (error) {
+                    adminStatusEl.textContent = error.message;
+                    adminStatusEl.className = 'status error';
+                  }
+                };
+
+                prevButton?.addEventListener('click', () => {
+                  if (historyState.index < historyState.entries.length - 1) {
+                    historyState.index += 1;
+                    renderHistoryView();
+                  }
+                });
+
+                nextButton?.addEventListener('click', () => {
+                  if (historyState.index > 0) {
+                    historyState.index -= 1;
+                    renderHistoryView();
+                  }
+                });
+
+                fieldRestoreButtons.forEach((button) => {
+                  button.addEventListener('click', () => {
+                    const fieldPath = button.dataset.fieldRestore;
+                    const rawValue = button.dataset.fieldValue;
+                    let parsedValue = rawValue;
+
+                    try {
+                      parsedValue = JSON.parse(rawValue);
+                    } catch (error) {
+                      parsedValue = rawValue;
+                    }
+
+                    restoreFieldValue(fieldPath, parsedValue);
+                  });
+                });
+
+                restoreButton?.addEventListener('click', async () => {
+                  const targetHash = entry?.commitHash;
+                  if (!targetHash) {
+                    return;
+                  }
+
+                  try {
+                    const response = await fetch('/api/admin/restore-promotion', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ code: historyState.code, commitHash: targetHash }),
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) {
+                      throw new Error(result.message || 'Unable to restore that snapshot.');
+                    }
+
+                    adminStatusEl.textContent = `Restored ${historyState.code} from ${targetHash}.`;
+                    adminStatusEl.className = 'status success';
+                    gitHashBadge.textContent = `commit ${result.gitHash || 'unknown'}`;
+                    await loadPromotions();
+                  } catch (error) {
+                    adminStatusEl.textContent = error.message;
+                    adminStatusEl.className = 'status error';
+                  }
+                });
+              }
+
+              renderHistoryView();
+            } catch (error) {
+              if (historyShell) {
+                historyShell.innerHTML = `<div class="promotion-summary">${escapeHtml(error.message)}</div>`;
+              }
+              adminStatusEl.textContent = error.message;
+              adminStatusEl.className = 'status error';
+            }
+          });
+        });
+
+        listEl.querySelectorAll('[data-retire-code]').forEach((button) => {
+          button.addEventListener('click', async () => {
+            const code = button.dataset.retireCode;
+            const promo = state.promotions.find((entry) => entry.code === code);
+            if (!promo) {
+              return;
+            }
+
+            try {
+              const response = await fetch('/api/admin/set-retired', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, retired: !promo.retired }),
+              });
+
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.message || 'Unable to update retirement state.');
+              }
+
+              await loadPromotions();
+              adminStatusEl.textContent = `Promotion ${code} ${result.retired ? 'retired' : 'reactivated'} successfully.`;
+              adminStatusEl.className = 'status success';
+            } catch (error) {
+              adminStatusEl.textContent = error.message;
+              adminStatusEl.className = 'status error';
+            }
+          });
+        });
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      async function loadPromotions() {
+        const response = await fetch('/api/admin/promotions');
+        const payload = await response.json();
+        state.promotions = payload.promotions || [];
+        renderPromotions();
+      }
+
+      async function evaluateCart() {
+        if (!state.cart.length) {
+          adminStatusEl.textContent = 'Add at least one product to the cart before evaluating.';
+          adminStatusEl.className = 'status error';
+          return;
+        }
+
+        const payload = {
+          items: state.cart.map((item) => ({ sku: item.sku, quantity: item.quantity })),
+          promoCode: promoCodeEl.value.trim(),
+        };
+
+        const response = await fetch('/api/checkout/evaluate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json();
+        const total = Number(result.grandTotal || 0);
+        const discount = Number(result.discountAmount || 0);
+
+        document.getElementById('discountValue').textContent = formatCurrency(discount);
+        document.getElementById('grandTotalValue').textContent = formatCurrency(total);
+        executionMetricEl.textContent = `${Number(result.executionTimeMs || 0).toFixed(3)} ms`;
+        savingsMetricEl.textContent = formatCurrency(discount);
+        promoMetricEl.textContent = result.details && result.details.appliedPromotion ? result.details.appliedPromotion.code : '—';
+
+        if (!response.ok) {
+          adminStatusEl.textContent = result.message || 'Checkout failed.';
+          adminStatusEl.className = 'status error';
+          return;
+        }
+
+        adminStatusEl.textContent = '';
+        adminStatusEl.className = 'status success';
+      }
+
+      const promotionListPanel = document.getElementById('promotionListPanel');
+      const promotionListToggle = document.getElementById('promotionListToggle');
+      const promotionSearchEl = document.getElementById('promotionSearch');
+
+      function syncPromotionToggleState() {
+        const toggleBtn = promotionListToggle?.querySelector('.collapse-toggle');
+        if (!toggleBtn) {
+          return;
+        }
+
+        toggleBtn.textContent = promotionListPanel.classList.contains('promotion-panel-collapsed') ? '+' : '−';
+      }
+
+      promotionListToggle?.addEventListener('click', () => {
+        promotionListPanel.classList.toggle('promotion-panel-collapsed');
+        syncPromotionToggleState();
+      });
+
+      syncPromotionToggleState();
+
+      promotionSearchEl?.addEventListener('input', (event) => {
+        state.promoSearch = event.target.value || '';
+        state.promoPage = 1;
+        renderPromotions();
+      });
+
+      document.getElementById('checkoutBtn').addEventListener('click', evaluateCart);
+      const syncBtn = document.getElementById('syncBtn');
+      if (syncBtn) {
+        syncBtn.addEventListener('click', syncGit);
+      }
+
+      async function initialize() {
+        await loadProducts();
+        await loadPromotions();
+        try {
+          const response = await fetch('/api/admin/git-sync', { method: 'POST' });
+          const payload = await response.json();
+          if (response.ok) {
+            gitHashBadge.textContent = `commit ${payload.gitHash || 'unknown'}`;
+          }
+        } catch (error) {
+          gitHashBadge.textContent = 'commit unavailable';
+        }
+      }
+
+      initialize();
+    </script>
+  </body>
+</html>

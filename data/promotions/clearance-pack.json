@@ -1,0 +1,17 @@
+{
+  "code": "CLEARANCEPACK",
+  "name": "Clearance Pack",
+  "required_set": {
+    "items": [
+      { "match_type": "category", "value": "Clearance", "quantity": 2 }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "percentage",
+    "discount_value": 25
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false
+}

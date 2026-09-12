@@ -1,0 +1,17 @@
+{
+  "code": "ACCESSORYDROP",
+  "name": "Accessory Drop",
+  "required_set": {
+    "items": [
+      { "match_type": "category", "value": "Accessories", "quantity": 1 }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "percentage",
+    "discount_value": 12
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false
+}

@@ -1,0 +1,18 @@
+{
+  "code": "WEEKENDDEAL",
+  "name": "Weekend Deal",
+  "required_set": {
+    "items": [
+      { "match_type": "category", "value": "Bags", "quantity": 1 },
+      { "match_type": "category", "value": "Accessories", "quantity": 1 }
+    ]
+  },
+  "reward": {
+    "target": "entire_set",
+    "discount_type": "percentage",
+    "discount_value": 16
+  },
+  "start_at": null,
+  "end_at": null,
+  "retired": false
+}

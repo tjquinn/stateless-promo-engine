@@ -1,0 +1,14 @@
+{
+  "code": "FREEACCESSORY",
+  "name": "Free Accessory",
+  "required_set": {
+    "items": [
+      { "match_type": "sku", "value": "SKU-100", "quantity": 2 }
+    ]
+  },
+  "reward": {
+    "target": "cheapest_item_in_set",
+    "discount_type": "percentage",
+    "discount_value": 100
+  }
+}
